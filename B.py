@@ -1,4 +1,101 @@
 #Functions
+def occurrences(string, pattern):
+    ls  = []
+    indx = 0
+    while True:
+        indx = string.find(pattern, indx)
+        if indx != -1:
+            ls.append(indx)
+            indx+=1
+        else:
+            return ls
+        
+def findClumps(string, pattern,l,t):
+    ls = occurrences(string,pattern)
+    queue = []
+    for x in ls:
+        try:
+            while x-queue[0]+1>l:  #eta correct while x-queue[0]+len(pattern)>l: len(pattern) add korte hoise karon pattern
+                                    # jekhane paoa gese sei index diye difference ber kortesi
+                queue.pop(0)
+        except:
+            pass
+        queue.append(x)    
+        if len(queue)>=t:
+               return True
+        
+    return False
+
+def hammingDis(p,q):
+    length = len(p)
+    hm = 0
+    for i in range(length):
+        if p[i]!=q[i]:
+            hm+=1
+    return hm
+
+def genPattern(k,ls,txt):
+    if k == 0:
+        ls.append(txt)
+        return
+    arr = ['A','C','G','T']
+    for x in arr:
+        genPattern(k-1,ls,txt+x)
+        
+def inputMatrix(row,col):
+    mat = []
+    for i in range(row):
+        mat.append([float(j) for j in input().split()])
+        
+    return mat
+
+def findProbability(temp,mat):
+    store = {'A':0,'C':1,'G':2,'T':3}
+    score = float(1)
+    for i in range(len(temp)):
+        score *= mat[store[temp[i]]][i]
+    return score
+    
+def findScore(motifSet,k,t):
+    score = 0
+    for i in range(k):
+        flag = {'A':0,'C':0,'G':0,'T':0}
+        mx = 0
+        for j in range(t):
+            flag[motifSet[j][i]]+=1
+            if flag[motifSet[j][i]]>=mx:
+                mx = flag[motifSet[j][i]]
+        score += t - mx
+    return score
+
+def createProfile(motifSet,k):
+    profile = [[],[],[],[]]
+    for i in range(k):
+        flag = {'A':0,'C':0,'G':0,'T':0} #flag = {'A':0.0,'C':0.0,'G':0.0,'T':0.0}
+        for j in range(len(motifSet)):
+            flag[motifSet[j][i]]+=1
+        profile[0].append(flag['A']/len(motifSet))
+        profile[1].append(flag['C']/len(motifSet))
+        profile[2].append(flag['G']/len(motifSet))
+        profile[3].append(flag['T']/len(motifSet))
+    return profile
+
+def findProfileMostProbableKmer(dna,k,profile):
+    mx = 0.0
+    kmer = "none"
+
+    for i in range(len(dna)-k+1):
+        temp = dna[i:i+k]
+        score = findProbability(temp,profile)
+        if score > mx :
+            mx = score
+            kmer = temp
+        elif score == mx:
+            if kmer == "none":
+                kmer = temp
+    return kmer
+                
+                
 
 
 #ba1f
